@@ -1,0 +1,27 @@
+const { Model } = require('objection')
+
+module.exports = class Ticket extends Model {
+  static get tableName () {
+    return 'tickets'
+  }
+
+  static get idColumn () {
+    return 'ticket_id'
+  }
+
+  static get relationMappings () {
+    // import models here to prevent require loops
+    const User = require('./user')
+
+    return {
+      owner: {
+        relation: Model.HasOneRelation,
+        modelClass: User,
+        join: {
+          from: `${this.tableName}.${User.idColumn}`,
+          to: `${User.tableName}.${User.idColumn}`
+        }
+      }
+    }
+  }
+}
