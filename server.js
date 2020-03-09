@@ -36,7 +36,7 @@ const psql = knex({
 // INSTANTIATE ROUTERS WITH DATABASE CONNECTIONS
 //
 app.use(require('./routes/health')({ psql }).routes())
-app.use(require('./routes/users')({ psql }).routes())
+app.use(require('./routes/user')({ psql }).routes())
 
 app.use(router.routes())
 app.use(router.allowedMethods())

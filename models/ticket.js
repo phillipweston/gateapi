@@ -15,7 +15,7 @@ module.exports = class Ticket extends Model {
 
     return {
       owner: {
-        relation: Model.HasOneRelation,
+        relation: Model.BelongsToOneRelation,
         modelClass: User,
         join: {
           from: `${this.tableName}.${User.idColumn}`,

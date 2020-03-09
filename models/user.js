@@ -18,8 +18,8 @@ module.exports = class User extends Model {
         relation: Model.HasManyRelation,
         modelClass: Ticket,
         join: {
-          from: `${this.tableName}.${Ticket.idColumn}`,
-          to: `${Ticket.tableName}.${Ticket.idColumn}`
+          from: 'users.user_id',
+          to: 'tickets.user_id'
         }
       }
     }
