@@ -20,9 +20,8 @@ exports.seed = async (knex, Promise) => {
   await knex('users').del()
   await knex('tickets').del()
 
-  // Report start
-  process.stdout.write('start\n')
-  // Iterate through each records
+  process.stdout.write('starting seed of guests and their tickets\n')
+
   for await (const record of parser) {
     const { name, email, adults } = record
 
