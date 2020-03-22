@@ -33,19 +33,22 @@ module.exports = ({ psql, knex }) => {
     let updatedTickets = []
     console.log("transfers", transfers)
 
-    await Ticket.transaction(async trx => {
-      // asyncForEach(transfers, async (let { name, ticket_id }))
-      for await (let { name, ticket_id } of transfers) {
+    await User.transaction(async trx => {
+      for await (let { name } of transfers) {
         name = name.trim()
         console.log("name", name)
         let fetched = await User.query(trx).where({ name })
         if (fetched.length === 0) {
-          try {
-            fetched = await User.query(trx).insert({ name })
-          } catch (e) {
-            fetched = await User.query(trx).where({ name })
-          }
+          fetched = await User.query(trx).insert({ name })
         }
+      }
+    })
+
+    await Ticket.transaction(async trx => {
+      // asyncForEach(transfers, async (let { name, ticket_id }))
+      for await (let { name, ticket_id } of transfers) {
+        name = name.trim()
+        let fetched = await User.query(trx).where({ name })
         let owner = fetched && fetched.length && fetched[0]
 
         console.log('owner', owner)
