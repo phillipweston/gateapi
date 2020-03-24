@@ -21,7 +21,7 @@ module.exports = ({ psql, knex }) => {
   }
 
   async function getUser (ctx, next) {
-    ctx.body = await User.query().where({ user_id: ctx.params.id }).eager({ tickets: true })
+    ctx.body = await User.query().where({ user_id: ctx.params.id }).eager({ tickets: true }).first()
   }
 
   async function getTickets (ctx, next) {
