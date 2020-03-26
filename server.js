@@ -22,7 +22,8 @@ app.use(bodyParser()) // add ctx.req.body to gather passed in payload
 // app.use(bearerToken()) // add ctx.request.token with the jwt
 // app.use(userAgent)
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'https://www.palmettopark.com' : 'http://localhost:3000',
+  origin: '*',
+  // origin: process.env.NODE_ENV === 'production' ? 'https://www.palmettopark.com' : 'http://localhost:3000',
   credentials: true
 }))
 
