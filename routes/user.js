@@ -29,14 +29,14 @@ module.exports = ({ psql, knex }) => {
   }
 
   async function transferTickets (ctx, next) {
-    const { transfers } = ctx.request.body
-    let updatedTickets = []
-    console.log("transfers", transfers)
+    const { records } = ctx.request.body
+    const updatedTickets = []
+    console.log('records', records)
 
     await User.transaction(async trx => {
-      for await (let { name } of transfers) {
+      for await (let { name } of records) {
         name = name.trim()
-        console.log("name", name)
+        console.log('name', name)
         let fetched = await User.query(trx).where({ name })
         if (fetched.length === 0) {
           fetched = await User.query(trx).insert({ name })
@@ -46,18 +46,19 @@ module.exports = ({ psql, knex }) => {
 
     await Ticket.transaction(async trx => {
       // asyncForEach(transfers, async (let { name, ticket_id }))
-      for await (let { name, ticket_id } of transfers) {
+      for await (let { name, ticket } of records) {
         name = name.trim()
-        let fetched = await User.query(trx).where({ name })
-        let owner = fetched && fetched.length && fetched[0]
+        const ticket_id = ticket.ticketId
+        const fetched = await User.query(trx).where({ name })
+        const owner = fetched && fetched.length && fetched[0]
 
         console.log('owner', owner)
         await Ticket.query(trx).update({ user_id: owner.user_id, updated_at: new Date().toISOString() }).where({ ticket_id })
-        const ticket = await Ticket.query(trx).where({ ticket_id: ticket_id })
-        if (ticket && ticket.length) updatedTickets.push(ticket[0])
+        const ticketRow = await Ticket.query(trx).where({ ticket_id })
+        if (ticketRow && ticketRow.length) updatedTickets.push(ticketRow[0])
       }
     })
-    console.log("results", updatedTickets)
+    console.log('updatedTickets', updatedTickets)
     ctx.body = updatedTickets
   }
 
