@@ -36,6 +36,7 @@ module.exports = ({ psql, knex }) => {
     const updatedTickets = []
 
     await User.transaction(async trx => {
+      console.log('in user transaction')
       for await (let { name } of records) {
         name = name.trim()
         console.log('name', name)
@@ -48,6 +49,7 @@ module.exports = ({ psql, knex }) => {
 
     await Ticket.transaction(async trx => {
       // asyncForEach(transfers, async (let { name, ticket_id }))
+      console.log('in ticket transaction', records)
       for await (let { name, ticket_id } of records) {
         name = name.trim()
         const fetched = await User.query(trx).where({ name })
