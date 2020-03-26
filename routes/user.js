@@ -29,8 +29,10 @@ module.exports = ({ psql, knex }) => {
   }
 
   async function transferTickets (ctx, next) {
-    const { records } = ctx.req.body
-    console.log('body', ctx.req.body)
+    console.log('body', ctx.req.body, ctx.request.body)
+
+    const { records } = ctx.request.body
+
     const updatedTickets = []
 
     await User.transaction(async trx => {
