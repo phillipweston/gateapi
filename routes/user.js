@@ -29,7 +29,7 @@ module.exports = ({ psql, knex }) => {
   }
 
   async function transferTickets (ctx, next) {
-    console.log('body', ctx.req.body, ctx.request.body)
+    console.log('body', ctx.request.body)
 
     const { records } = ctx.request.body
 
@@ -48,9 +48,8 @@ module.exports = ({ psql, knex }) => {
 
     await Ticket.transaction(async trx => {
       // asyncForEach(transfers, async (let { name, ticket_id }))
-      for await (let { name, ticket } of records) {
+      for await (let { name, ticket_id } of records) {
         name = name.trim()
-        const ticket_id = ticket.ticketId
         const fetched = await User.query(trx).where({ name })
         const owner = fetched && fetched.length && fetched[0]
 
