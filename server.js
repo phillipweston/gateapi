@@ -18,7 +18,11 @@ const router = new Router()
 //
 app.use(logger()) // help us with logging
 // app.use(helmet()) // apply extra security to not allow webserver to identify anything about itself, not allow xss, etc
-app.use(bodyParser()) // add ctx.req.body to gather passed in payload
+app.use(bodyParser({
+  extendTypes: {
+    json: ['application/x-javascript'] // will parse application/x-javascript type body as a JSON string
+  }
+}))
 // app.use(bearerToken()) // add ctx.request.token with the jwt
 // app.use(userAgent)
 app.use(cors({
