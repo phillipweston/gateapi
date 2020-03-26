@@ -57,7 +57,7 @@ module.exports = ({ psql, knex }) => {
 
         console.log('owner', owner)
         await Ticket.query(trx).update({ user_id: owner.user_id, updated_at: new Date().toISOString() }).where({ ticket_id })
-        const ticketRow = await Ticket.query(trx).where({ ticket_id })
+        const ticketRow = await Ticket.query(trx).where({ ticket_id }).eager('[owner]')
         if (ticketRow && ticketRow.length) updatedTickets.push(ticketRow[0])
       }
     })
