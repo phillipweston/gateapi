@@ -1,10 +1,14 @@
 version: '3.1'
 services:
-  ppapi:
-    environment:
-      - POSTGRES_URL=${POSTGRES_URL}
-      - MAILGUN_PRIV=${MAILGUN_PRIV}
-    build: .
-    ports:
-      - '7777:7777'
-
+    postgres:
+        image: postgres:11
+        ports:
+            - '5432:5432'
+        environment:
+            - POSTGRES_DB=gate
+            - POSTGRES_USER=gate
+            - POSTGRES_PASSWORD=gate
+        volumes:
+            - db-data:/var/lib/postgresql/data
+volumes:
+    db-data:

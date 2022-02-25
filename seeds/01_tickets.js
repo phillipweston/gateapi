@@ -11,7 +11,7 @@ const { parse } = require('csv')
 
 // need to account for early arrival and possibly late departure
 
-exports.seed = async (knex, Promise) => {
+exports.seed = async (knex) => {
   User.knex(psql)
   Ticket.knex(psql)
 
@@ -38,6 +38,7 @@ exports.seed = async (knex, Promise) => {
         user_id: user.user_id
       }))
     }
+
     await Promise.all(tickets)
   }
   return Promise.resolve()

@@ -23,17 +23,18 @@ exports.up = async knex => {
     })
   }
 
-  // if (!await knex.schema.hasTable('users_tickets')) {
-  //   await knex.schema.createTable('users_tickets', t => {
-  //     t.increments('user_ticket_id').unsigned().unique().primary()
-  //     t.integer('ticket_id').unsigned().notNullable()
-  //     t.integer('user_id').unsigned().notNullable()
-  //     t.timestamp('updated_at')
-  //     t.timestamp('created_at').defaultTo(knex.fn.now())
-  //     t.foreign('ticket_id').references('ticket_id').inTable('tickets')
-  //     t.foreign('user_id').references('user_id').inTable('users')
-  //   })
-  // }
+  if (!await knex.schema.hasTable('users_tickets')) {
+    await knex.schema.createTable('users_tickets', t => {
+      t.increments('user_ticket_id').unsigned().unique().primary()
+      t.integer('ticket_id').unsigned().notNullable()
+      t.integer('user_id').unsigned().notNullable()
+      t.timestamp('updated_at')
+      t.timestamp('created_at').defaultTo(knex.fn.now())
+      t.foreign('ticket_id').references('ticket_id').inTable('tickets')
+      t.foreign('user_id').references('user_id').inTable('users')
+    })
+  }
+
 }
 
 exports.down = async knex => {

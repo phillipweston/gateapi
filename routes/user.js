@@ -17,15 +17,15 @@ module.exports = ({ psql, knex }) => {
   router.post('/tickets/transfer', transferTickets)
 
   async function getUsers (ctx, next) {
-    ctx.body = await User.query().eager({ tickets: true })
+    ctx.body = await User.query().withGraphFetched('[tickets]');
   }
 
   async function getUser (ctx, next) {
-    ctx.body = await User.query().where({ user_id: ctx.params.id }).eager({ tickets: true }).first()
+    ctx.body = await User.query().where({ user_id: ctx.params.id }).withGraphFetched('[tickets]').first();
   }
 
   async function getTickets (ctx, next) {
-    ctx.body = await Ticket.query().eager('[owner]')
+    ctx.body = await Ticket.query().withGraphFetched('[owner]')
   }
 
   async function transferTickets (ctx, next) {
@@ -57,7 +57,7 @@ module.exports = ({ psql, knex }) => {
 
         console.log('owner', owner)
         await Ticket.query(trx).update({ user_id: owner.user_id, updated_at: new Date().toISOString() }).where({ ticket_id })
-        const ticketRow = await Ticket.query(trx).where({ ticket_id }).eager('[owner]')
+        const ticketRow = await Ticket.query(trx).where({ ticket_id }).withGraphFetched('[owner]')
         if (ticketRow && ticketRow.length) updatedTickets.push(ticketRow[0])
       }
     })
