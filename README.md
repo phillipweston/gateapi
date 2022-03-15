@@ -1,7 +1,11 @@
 # Gate API
 This is a work in progress, with the intention to be used in June for the Friends & Family summer campout.
 
+<<<<<<< HEAD
 This API ingests and server ticket information to be used by Gate App for event check-in. Credentials are intentionally hard coded to keep development simple. This application will be run offline via a Raspberry-Pi and written by community volunteers.
+=======
+This API ingests and serves ticket information to be used by [Gate App](https://github.com/phillipweston/gateapp) for the event check-in. Credentials are intentionally hard coded to keep development simple with no need to share a .env or similar. This application will be run offline via a Raspberry Pi and completed with community help. 
+>>>>>>> 116102c (cleanup README so it is somewhat useable)
 
 ### Setup
 1. `docker-compose up`
