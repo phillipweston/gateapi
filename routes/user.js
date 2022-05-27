@@ -14,7 +14,31 @@ module.exports = ({ psql, knex }) => {
   router.get('/users', getUsers)
   router.get('/users/:id', getUser)
   router.get('/tickets', getTickets)
-  router.post('/tickets/transfer', transferTickets)
+  router.post('/tickets/trasfer', transferTickets)
+  router.get('/tickets/:id', getTicket)
+  router.post('/audit', postAuditLog)
+  router.get('/audit', getAuditLog)
+
+  router.get('/tickets/redeem/:id', toggleRedeem)
+
+
+  async function toggleRedeem (ctx, next) {
+    const { id: ticket_id } = ctx.params
+    return Ticket.transaction(async trx =>
+      Ticket.query(trx).updateAndFetch({
+        redeemed: !ticket.redeemed,
+        updated_at: new Date().toISOString() })
+      .where({ ticket_id }))
+  }
+
+  async function postAuditLog (ctx, next) {
+  }
+  async function getAuditLog (ctx, next) {
+  }
+
+  async function getTicket (ctx, next) {
+    ctx.body = await Ticket.query().withGraphFetched('[owner]').where({ ticket_id: ctx.params.id })
+  }
 
   async function getUsers (ctx, next) {
     ctx.body = await User.query().withGraphFetched('[tickets]');
@@ -27,7 +51,7 @@ module.exports = ({ psql, knex }) => {
   async function getTickets (ctx, next) {
     ctx.body = await Ticket.query().withGraphFetched('[owner]')
   }
-
+ 
   async function transferTickets (ctx, next) {
     console.log('body', ctx.request.body)
 
