@@ -42,6 +42,8 @@ const psql = knex({
 //
 app.use(require('./routes/health')({ psql }).routes())
 app.use(require('./routes/user')({ psql, knex }).routes())
+app.use(require('./routes/tickets')({ psql, knex }).routes())
+app.use(require('./routes/audit')({ psql, knex }).routes())
 
 app.use(router.routes())
 app.use(router.allowedMethods())
