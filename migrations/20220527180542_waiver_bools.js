@@ -5,7 +5,8 @@ exports.up = async knex => {
         t.increments('id').unsigned().unique().primary()
         t.integer('from_id')
         t.integer('to_id')
-        t.enum('action', ['redeem', 'waiver', 'health', 'license']).notNull();
+        t.integer('ticket_id')
+        t.enum('action', ['redeem', 'waiver', 'health', 'license', 'transfer']).notNull();
         t.timestamp('updated_at')
         t.timestamp('created_at').defaultTo(knex.fn.now())
       })

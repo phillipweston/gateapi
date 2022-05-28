@@ -4,7 +4,8 @@ const asyncForEach = require('../utils/asyncForEach')
 
 const {
   User,
-  Ticket
+  Ticket,
+  Audit
 } = require('../models')
 
 module.exports = ({ psql, knex }) => {
@@ -26,11 +27,24 @@ module.exports = ({ psql, knex }) => {
  
   async function toggleRedeem (ctx, next) {
     const { id: ticket_id } = ctx.params
-    return Ticket.transaction(async trx =>
-      Ticket.query(trx).updateAndFetch({
-        redeemed: !ticket.redeemed,
-        updated_at: new Date().toISOString() })
-      .where({ ticket_id }))
+    try {
+        const ticket = await Ticket.transaction(async trx =>
+            await Ticket.query(trx).updateAndFetch({
+                redeemed: !ticket.redeemed,
+                updated_at: new Date().toISOString() })
+                .where({ ticket_id }))
+        await Audit.query(trx).insert({
+            action: 'redeem',
+            ticket_id: ticket.ticket_id,
+            to_id: ticket.user_id,
+            from_id: ticket.user_id
+        })
+        ctx.body = ticket
+    }
+    catch (error) {
+        ctx.status = 500
+        ctx.body = error
+    }
   }
 
   async function transferTickets (ctx, next) {
@@ -61,10 +75,17 @@ module.exports = ({ psql, knex }) => {
         name = name.trim()
         const fetched = await User.query(trx).where({ name })
         const owner = fetched && fetched.length && fetched[0]
-
-        console.log('owner', owner)
+        const ticket = await Ticket.query(trx).withGraphFetched('[owner]').where({ ticket_id })
         await Ticket.query(trx).update({ user_id: owner.user_id, updated_at: new Date().toISOString() }).where({ ticket_id })
         const ticketRow = await Ticket.query(trx).where({ ticket_id }).withGraphFetched('[owner]')
+
+        await Audit.query(trx).insert({
+            action: 'transfer',
+            ticket_id,
+            to_id: owner.user_id,
+            from_id: ticket[0].user_id
+        })
+
         if (ticketRow && ticketRow.length) updatedTickets.push(ticketRow[0])
       }
     })
