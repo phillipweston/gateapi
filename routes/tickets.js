@@ -28,7 +28,8 @@ module.exports = ({ psql, knex }) => {
   async function toggleRedeem (ctx, next) {
     const { id: ticket_id } = ctx.params
     try {
-        const ticket = await Ticket.transaction(async trx =>
+        let ticket = await Ticket.query().where({ ticket_id })
+        ticket = await Ticket.transaction(async trx =>
             await Ticket.query(trx).updateAndFetch({
                 redeemed: !ticket.redeemed,
                 updated_at: new Date().toISOString() })

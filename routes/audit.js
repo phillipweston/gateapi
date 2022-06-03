@@ -4,19 +4,25 @@ const asyncForEach = require('../utils/asyncForEach')
 
 const {
   User,
-  Ticket
+  Ticket,
+  Audit
 } = require('../models')
 
 module.exports = ({ psql, knex }) => {
   User.knex(psql)
   Ticket.knex(psql)
+  Audit.knex(psql)
 
-  router.post('/audit', postAuditLog)
-  router.get('/audit', getAuditLog)
+  router.post('/audit', postAudit)
+  router.get('/audit', getAudit)
 
-  async function postAuditLog (ctx, next) {
+
+  async function getAudit (ctx, next) {
+    ctx.body = await Audit.query().withGraphFetched('[ticket,to,from]');
   }
-  async function getAuditLog (ctx, next) {
+
+  async function postAudit (ctx, next) {
+
   }
 
   return router
