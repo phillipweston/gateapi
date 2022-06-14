@@ -18,7 +18,7 @@ module.exports = ({ psql, knex }) => {
 
 
   async function getAudit (ctx, next) {
-    ctx.body = await Audit.query().withGraphFetched('[ticket,to,from]');
+    ctx.body = await Audit.query().withGraphFetched('[ticket,to,from]').orderBy('created_at', 'desc');
   }
 
   async function postAudit (ctx, next) {
