@@ -34,13 +34,15 @@ module.exports = ({ psql, knex }) => {
     }
 
     async function getUsers(ctx, next) {
-        ctx.body = await User.query().withGraphFetched('[tickets]')
+        ctx.body = await User.query().withGraphFetched(
+            '[tickets,tickets.owner,tickets.originalOwner]'
+        )
     }
 
     async function getUser(ctx, next) {
         ctx.body = await User.query()
             .where({ user_id: ctx.params.id })
-            .withGraphFetched('[tickets]')
+            .withGraphFetched('[tickets,tickets.owner,tickets.originalOwner]')
             .first()
     }
 

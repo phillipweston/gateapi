@@ -43,6 +43,7 @@ exports.seed = async (knex) => {
                 tickets.push(
                     Ticket.query().insert({
                         user_id: user.user_id,
+                        original_owner_id: user.user_id,
                     })
                 )
             }
