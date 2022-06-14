@@ -2,22 +2,23 @@ const router = require('koa-router')()
 
 const asyncForEach = require('../utils/asyncForEach')
 
-const { User, Ticket } = require('../models')
+const { User, Ticket, Audit } = require('../models')
 
 module.exports = ({ psql, knex }) => {
     User.knex(psql)
     Ticket.knex(psql)
+    Audit.knex(psql)
 
     router.get('/users', getUsers)
     router.get('/users/:id', getUser)
     router.post('/users/waiver', signWaiver)
 
     async function signWaiver(ctx, next) {
-        const { first, last, user_id } = ctx.request.body
+        const { name, user_id } = ctx.request.body
         try {
-            let user = await User.query().where({ user_id }).first()
+            let user = await User.query().findOne({ user_id })
             user = await user.$query().updateAndFetch({
-                name: `${first} ${last}`,
+                name,
                 waiver: new Date().toISOString(),
             })
             await Audit.query().insert({
