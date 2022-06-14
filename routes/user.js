@@ -13,7 +13,7 @@ module.exports = ({ psql, knex }) => {
     router.post('/users/waiver', signWaiver)
 
     async function signWaiver(ctx, next) {
-        const { first, last, user_id } = ctx.body
+        const { first, last, user_id } = ctx.request.body
         try {
             let user = await User.query().where({ user_id }).first()
             user = await user.$query().updateAndFetch({
