@@ -15,11 +15,12 @@ module.exports = ({ psql, knex }) => {
     router.post('/users/health', signHealth)
 
     async function signWaiver(ctx, next) {
-        const { name, user_id } = ctx.request.body
+        const { name, license, user_id } = ctx.request.body
         try {
             let user = await User.query().findOne({ user_id })
             user = await user.$query().updateAndFetch({
                 name,
+                license,
                 waiver: new Date().toISOString(),
             })
             await Audit.query().insert({
