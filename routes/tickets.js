@@ -16,7 +16,13 @@ module.exports = ({ psql, knex }) => {
   router.post('/tickets/transfer', transferTickets)
   router.get('/tickets/:id', getTicket)
   router.get('/tickets/redeem/:id', toggleRedeem)
-  
+  router.post('/tickets', createTicket)
+
+  async function createTicket (ctx, next) {
+    const { name, email, adults, status, guests } = ctx.request.body
+
+  }
+
   async function getTicket (ctx, next) {
     ctx.body = await Ticket.query().withGraphFetched('[owner, originalOwner]').where({ ticket_id: ctx.params.id })
   }

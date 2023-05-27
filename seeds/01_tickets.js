@@ -14,8 +14,12 @@ exports.seed = async (knex) => {
     Ticket.knex(psql)
     Audit.knex(psql)
 
-    const parser = fs
-        .createReadStream('./seeds/tickets.csv')
+    const ticketParser = fs
+        .createReadStream('./seeds/fnf.guests.2023.csv')
+        .pipe(parse({ columns: true }))
+
+    const earlyArrivalParser = fs
+        .createReadStream('./seeds/fnf.ea.2023.csv')
         .pipe(parse({ columns: true }))
 
     await knex('audit_log').del()
@@ -25,7 +29,7 @@ exports.seed = async (knex) => {
 
     process.stdout.write('starting seed of guests and their tickets\n')
 
-    for await (const record of parser) {
+    for await (const record of ticketParser) {
         const { name, email, adults, status, guests } = record
 
         let user = { name: name.trim(), email: email.trim() }
@@ -112,14 +116,35 @@ exports.seed = async (knex) => {
                         })
 
                         console.log('user', user, email)
-                        console.log('lastTicket', lastTicket)
                     }
                 }
             }
         }
     }
+
+    for await (const record of earlyArrivalParser) {
+        // console.log(record)
+        const { Name: name, Type: type, Role: role } = record
+
+        if (type === 'EA-Crew') {
+            const user = await User.query().findOne('name', '=', name)
+
+            if (user) {
+                await User.query()
+                    .update({
+                        early_arrival: true,
+                        early_arrival_role: role,
+                    })
+                    .where({ user_id: user.user_id })
+                console.log(`updated ${name} to early arrival: ${role}`)
+            }
+            else {
+                console.log(`could not find ${name} to update early arrival: ${role}`)
+            }
+        }
+    }
     // parse each line again
-    // find each existing user and all of their tickets
+    // find each existing user and all of their tickets 
     // parse through the string[] and find or create new users for each person
     // assign them their ticket
     // update the audit log
