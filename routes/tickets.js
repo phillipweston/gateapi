@@ -30,8 +30,8 @@ module.exports = ({ psql, knex }) => {
   }
 
   async function createTicket (ctx, next) {
-    const { name, email } = ctx.request.body
-    const user = await User.query().insert({ name, email })
+    const { name, email, phone } = ctx.request.body
+    const user = await User.query().insert({ name, email, phone })
     await Ticket.query().insert({ user_id: user.user_id, original_owner_id: user.user_id })
     await Audit.query().insert({
       action: 'create',
