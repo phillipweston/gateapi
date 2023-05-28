@@ -1,4 +1,5 @@
 const router = require('koa-router')()
+const fs = require('fs')
 
 const asyncForEach = require('../utils/asyncForEach')
 
@@ -17,10 +18,27 @@ module.exports = ({ psql, knex }) => {
   router.get('/tickets/:id', getTicket)
   router.get('/tickets/redeem/:id', toggleRedeem)
   router.post('/tickets', createTicket)
+  router.post('/tickets/upload/:id', uploadPhoto)
+
+  async function uploadPhoto (ctx, next) {
+    const { id } = ctx.params
+    const file = ctx.request.files.files
+    const filePath = 'uploads/' + `${id}.png`
+    const fileContent = fs.readFileSync(file.path);
+    fs.writeFileSync(filePath, fileContent);
+    ctx.body = { success: true }
+  }
 
   async function createTicket (ctx, next) {
-    const { name, email, adults, status, guests } = ctx.request.body
-
+    const { name, email } = ctx.request.body
+    const user = await User.query().insert({ name, email })
+    await Ticket.query().insert({ user_id: user.user_id, original_owner_id: user.user_id })
+    await Audit.query().insert({
+      action: 'create',
+      to_id: user.user_id,
+      from_id: user.user_id
+    })
+    ctx.body = user
   }
 
   async function getTicket (ctx, next) {

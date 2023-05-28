@@ -5,9 +5,12 @@ const Router = require('koa-router')
 const logger = require('koa-logger')
 const cors = require('@koa/cors')
 const bodyParser = require('koa-bodyparser')
+const formidable = require('koa2-formidable')
 const errorCatcher = require('./middlewares/error-catcher')
 const knex = require('knex')
 const { PG_READ_URL, PG_WRITE_URL, PORT } = require('./config')
+const KoaStatic = require('koa-static')
+
 
 // INSTANTIATE APPLICATION
 //
@@ -18,7 +21,11 @@ const router = new Router()
 //
 app.use(logger()) // help us with logging
 // app.use(helmet()) // apply extra security to not allow webserver to identify anything about itself, not allow xss, etc
+app.use(KoaStatic('uploads'))
+
+app.use(formidable())
 app.use(bodyParser({
+  multipart: true,
   extendTypes: {
     json: ['application/x-javascript'] // will parse application/x-javascript type body as a JSON string
   }

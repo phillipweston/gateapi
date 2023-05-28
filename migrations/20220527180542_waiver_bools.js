@@ -6,7 +6,7 @@ exports.up = async knex => {
         t.integer('from_id')
         t.integer('to_id')
         t.integer('ticket_id')
-        t.enum('action', ['redeem', 'waiver', 'health', 'license', 'transfer']).notNull();
+        t.enum('action', ['redeem', 'waiver', 'health', 'license', 'transfer', 'create']).notNull();
         t.timestamp('updated_at')
         t.timestamp('created_at').defaultTo(knex.fn.now())
       })

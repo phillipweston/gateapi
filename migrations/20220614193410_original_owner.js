@@ -9,7 +9,7 @@ exports.up = async knex => {
 
   exports.down = async knex => {
     await knex.schema.alterTable('tickets', t => {
-        t.dropColumn('original_owner');
+        t.dropColumn('original_owner_id');
     })
   }
   
