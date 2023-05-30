@@ -23,11 +23,11 @@ module.exports = ({ psql, knex }) => {
                 license_plate,
                 waiver: new Date().toISOString(),
             })
-            await Audit.query().insert({
-                action: 'waiver',
-                to_id: user.user_id,
-                from_id: user.user_id,
-            })
+            // await Audit.query().insert({
+            //     action: 'waiver',
+            //     to_id: user.user_id,
+            //     from_id: user.user_id,
+            // })
             ctx.body = user
         } catch (error) {
             ctx.status = 500
