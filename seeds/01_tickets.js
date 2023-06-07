@@ -136,7 +136,7 @@ exports.seed = async (knex) => {
                         early_arrival_role: role,
                     })
                     .where({ user_id: user.user_id })
-                console.log(`updated ${name} to early arrival: ${role}`)
+                // console.log(`updated ${name} to early arrival: ${role}`)
             }
             else {
                 console.log(`could not find ${name} to update early arrival: ${role}`)
