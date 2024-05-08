@@ -8,6 +8,11 @@ jobs:
       matrix:
         version: [1, 2, 3, 4]
     steps:
+      - shell: bash
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          echo "secret ${{ matrix.version }} $API_KEY"
       - run: echo "${{ matrix.version }} 🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "${{ matrix.version }} 🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "${{ matrix.version }} 🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
